@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid p-4">
+        <div class="dashboard-header text-white mb-4">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="display-4 font-weight-bold">Dashboard Overview</h1>
+                        <p class="lead">Track your data, analyze trends, and get actionable insights at a glance.</p>
+                    </div>
+                    <div class="col-md-4 text-md-right mt-3 mt-md-0">
+                        <button class="btn btn-primary btn-lg shadow-sm">Generate Report</button>
+                        <button class="btn btn-outline-light btn-lg shadow-sm">Settings</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- Top Row for Key Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card shadow text-center p-4">
+                    <h4>$43,652</h4>
+                    <p>Revenue</p>
+                    <small class="text-success">+5.2% since last week</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow text-center p-4">
+                    <h4>2,346</h4>
+                    <p>Total Participants</p>
+                    <small class="text-success">+3.1% since yesterday</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow text-center p-4">
+                    <h4>1,100</h4>
+                    <p>Active Users</p>
+                    <small class="text-danger">-1.5% today</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow text-center p-4">
+                    <h4>25m 30s</h4>
+                    <p>Fastest Completion</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Row for Charts -->
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card p-4 shadow">
+                    <h5 class="mb-3">Visitors Over Time</h5>
+                    <canvas id="visitorsChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card p-4 shadow">
+                    <h5 class="mb-3">Participation Breakdown</h5>
+                    <canvas id="participationChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

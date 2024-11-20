@@ -1,0 +1,342 @@
+/* Import Google Fonts */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #384031, #d4f3b7)   ;
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Container for the login card */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 15px;
+}
+
+/* Card styling */
+.login-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Headings and paragraphs */
+.login-card h1 {
+    font-weight: 600;
+    font-size: 2.5rem;
+}
+
+.login-card p {
+    font-size: 1rem;
+    color: #eaeaea;
+}
+
+/* Input styling */
+.form-control {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    height: 45px;
+}
+
+/* Button styling */
+.btn-primary {
+    background-color: #4a5846;
+    border: none;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #4a5846;
+    transform: scale(1.02);
+}
+
+.btn-outline-primary {
+    border: 2px solid #4a5846;
+    color: #4a5846;
+    font-weight: bold;
+    border-radius: 8px;
+    /* transition: all 0.3s ease-in-out; */
+}
+
+
+
+.btn-outline-primary:hover {
+    background-color: #4a5846;
+    color: #fff;
+    transform: scale(1.02);
+    border: #333;
+}
+
+.btn-outline-light {
+    border: 2px solid #fff;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-outline-light:hover {
+    background-color: #fff;
+    color: #4a5846;
+    transform: scale(1.02);
+}
+
+
+/* Quiz Container */
+.quiz-container {
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, #9c1515, #fc2525);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+}
+
+.quiz-layout {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100vh;
+    background: linear-gradient(135deg, #384031, #d4f3b7);
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Quiz Section */
+.quiz-section {
+    flex: 2;
+    padding: 20px;
+    min-width: 400px;
+}
+
+.quiz-card {
+    background-color: #ecf1e6;
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Quiz Card */
+/* .quiz-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+} */
+
+/* Question Number and Text */
+#questionNumber {
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+#questionText {
+    font-weight: 400;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+/* Progress Bar */
+.progress {
+    height: 10px;
+    border-radius: 5px;
+    background-color: #b9c3b4;
+}
+
+.progress-bar {
+    background-color: #4a5846;
+    transition: width 0.5s ease-in-out;
+}
+
+/* Options */
+.options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.option-btn {
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+}
+
+.option-btn:hover {
+    transform: scale(1.02);
+    background-color: #4a5846;
+    color: #fff;
+}
+
+.option-btn.selected {
+    background-color: #4a5846;
+    color: #fff;
+    pointer-events: none;
+}
+
+/* Next Button */
+#nextButton {
+    border-radius: 8px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+#nextButton:disabled {
+    background-color: rgba(255, 255, 255, 0.5);
+    pointer-events: none;
+}
+
+/* Leaderboard Section */
+.leaderboard-section {
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.leaderboard-card {
+    width: 100%;
+    text-align: center;
+    color: #fff;
+}
+
+.leaderboard-card h3 {
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.list-group {
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto;
+    padding: 0;
+    list-style-type: none;
+}
+
+.list-group-item {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #333;
+    border: none;
+    margin: 5px 0;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: left;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .quiz-layout {
+        flex-direction: column;
+    }
+
+    .quiz-section, .leaderboard-section {
+        flex: 1;
+        width: 100%;
+    }
+}
+
+h2 {
+    font-weight: bold;
+    color: #4b4b4b;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.card h4 {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #333333;
+}
+
+.card p {
+    margin: 0;
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+.card small {
+    font-size: 0.875rem;
+}
+
+canvas {
+    max-height: 250px;
+}
+
+/* Dashboard Header */
+.dashboard-header {
+    background: linear-gradient(135deg, #384c27, #5f6e51);
+    padding: 40px 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.dashboard-header p {
+    font-size: 1.2rem;
+    margin-bottom: 0;
+    color: #dcdcdc;
+}
+
+.dashboard-header .btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 25px;
+}
+
+.dashboard-header .btn-primary {
+    background: #a1a793;
+    border: none;
+}
+
+.dashboard-header .btn-outline-light {
+    color: #fff;
+    border-color: #fff;
+    transition: 0.3s;
+}
+
+.dashboard-header .btn-outline-light:hover {
+    background: #fff;
+    color: #007bff;
+}
+
+.table {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    color: #000;
+
+}
+
+.card#history_table {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    color: #4a5846;
+}
