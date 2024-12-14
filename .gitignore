@@ -1,1 +1,5 @@
-front_end_21034.zip
+*.zip
+__pycache__/
+venv/
+db.sqlite3
+
