@@ -1,0 +1,63 @@
+[
+    {
+      "text": "What is the capital of France?",
+      "options": "Paris,London,Berlin,Madrid",
+      "correct_answer": "Paris",
+      "difficulty": 1
+    },
+    {
+      "text": "Which programming language is known as the backbone of web development?",
+      "options": "Python,JavaScript,Java,C++",
+      "correct_answer": "JavaScript",
+      "difficulty": 2
+    },
+    {
+      "text": "What is the square root of 64?",
+      "options": "6,7,8,9",
+      "correct_answer": "8",
+      "difficulty": 1
+    },
+    {
+      "text": "Which planet is known as the Red Planet?",
+      "options": "Earth,Mars,Jupiter,Saturn",
+      "correct_answer": "Mars",
+      "difficulty": 1
+    },
+    {
+      "text": "Who wrote the play 'Romeo and Juliet'?",
+      "options": "Shakespeare,Dickens,Hemingway,Austen",
+      "correct_answer": "Shakespeare",
+      "difficulty": 2
+    },
+    {
+      "text": "Which is the largest mammal in the world?",
+      "options": "Elephant,Blue Whale,Shark,Giraffe",
+      "correct_answer": "Blue Whale",
+      "difficulty": 1
+    },
+    {
+      "text": "What is the freezing point of water?",
+      "options": "0°C,32°F,Both,None",
+      "correct_answer": "Both",
+      "difficulty": 2
+    },
+    {
+      "text": "Who discovered penicillin?",
+      "options": "Fleming,Newton,Einstein,Curie",
+      "correct_answer": "Fleming",
+      "difficulty": 3
+    },
+    {
+      "text": "Which element is denoted by the symbol 'O'?",
+      "options": "Oxygen,Gold,Iron,Silver",
+      "correct_answer": "Oxygen",
+      "difficulty": 1
+    },
+    {
+      "text": "Which is the smallest prime number?",
+      "options": "0,1,2,3",
+      "correct_answer": "2",
+      "difficulty": 1
+    }
+  ]
+  

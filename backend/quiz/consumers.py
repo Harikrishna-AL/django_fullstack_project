@@ -217,6 +217,29 @@ class QuizConsumer(AsyncWebsocketConsumer):
             await self.start_quiz(data)
         elif action == 'submit_answer':
             await self.submit_answer(data)
+        elif action == 'get_next_question':
+            await self.send_next_question(data)
+
+    async def send_next_question(self, data):
+        user = self.scope['user']
+        room = await sync_to_async(lambda: Room.objects.get(code=self.room_code))()
+        question = await get_next_question(user, room)
+
+        if question:
+            await self.send(text_data=json.dumps({
+                'type': 'next_question',
+                'question': {
+                    'id': question.id,
+                    'text': question.text,
+                    'options': question.options.split(',')
+                }
+            }))
+        else:
+            await self.send(text_data=json.dumps({
+                'type': 'quiz_completed',
+                'message': 'Quiz completed!'
+            }))
+
 
     async def join_room(self, data):
         user = self.scope['user']

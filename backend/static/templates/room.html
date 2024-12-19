@@ -16,35 +16,100 @@
             <button class="btn btn-primary btn-lg btn-block" onclick="joinRoom()">Join Room</button>
         </div>
     </div>
+    <div class="container d-flex justify-content-between align-items-center" style="height: 100vh;">
+        <div>
+            <h2>Room: <span id="roomCodeDisplay"></span></h2>
+            <div id="waitingArea" class="mt-4">
+                <h3>Waiting for players...</h3>
+                <ul id="userList"></ul>
+            </div>
+        </div>
+        <div id="loadingScreen" class="text-center d-none">
+            <h2>Loading...</h2>
+            <p>Waiting for the admin to start the quiz...</p>
+        </div>
+    </div>
+    
     <script>
+        let socket;
+    
         async function joinRoom() {
             const roomCode = document.getElementById('roomCode').value.trim();
-
+    
             if (!roomCode) {
                 alert('Please enter a room code');
                 return;
             }
-
-            const token = localStorage.getItem('authToken'); // Get the stored auth token
+    
+            const token = localStorage.getItem('authToken');
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/join-room/${roomCode}/`, { // Replace with your API endpoint
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
+                // const response = await fetch(`http://127.0.0.1:8000/api/join-room/${roomCode}/`, { 
+                //     method: 'POST',
+                //     headers: {
+                //         'Authorization': `Bearer ${token}`,
+                //         'Content-Type': 'application/json'
+                //     }
+                // });
+    
+                // if (1) {
+                    document.getElementById('roomCodeDisplay').innerText = roomCode;
+    
+                    // Establish WebSocket connection
+                    socket = new WebSocket(`ws://127.0.0.1:8000/ws/quiz/${roomCode}/`);
+    
+                    socket.onopen = function () {
+                        console.log('WebSocket connection established');
+                        if (socket.readyState === WebSocket.OPEN) {
+                            socket.send(JSON.stringify({
+                                action: 'join_room'
+                            }));
+                        }
 
-                if (response.ok) {
-                    window.location.href = 'quiz.html'; // Redirect to quiz page
-                } else {
-                    alert('Invalid room code or unable to join the room');
-                }
+                        if (socket.readyState === WebSocket.OPEN) {
+                            socket.send(JSON.stringify({
+                                action: "start_quiz"
+                            }));
+                            console.log("Start quiz message sent!");
+                        } else {
+                            console.error("WebSocket is not open. Current state:", socket.readyState);
+                        }
+                    };
+    
+                    socket.onmessage = function (event) {
+                        const data = JSON.parse(event.data);
+                        console.log('Message received:', data);
+    
+                        if (data.type === 'room_update') {
+                            // Update the list of users
+                            const userList = document.getElementById('userList');
+                            const li = document.createElement('li');
+                            li.innerText = `${data.message}`;
+                            userList.appendChild(li);
+                        } else if (data.type === 'quiz_started') {
+                            // Redirect to quiz page
+                            window.location.href = 'quiz.html';
+                        }
+                    };
+    
+                    socket.onclose = () => {
+                        console.log('WebSocket connection closed');
+                        // remove the user from the list
+                        
+                    };
+    
+                    // Show the waiting screen
+                    document.getElementById('waitingArea').classList.remove('d-none');
+                    document.getElementById('loadingScreen').classList.add('d-none');
+                // } else{
+                //     alert('Invalid room code or unable to join the room');
+                
+                // }
             } catch (error) {
                 console.error('Error:', error);
                 alert('An error occurred while joining the room.');
             }
         }
     </script>
+    
 </body>
 </html>

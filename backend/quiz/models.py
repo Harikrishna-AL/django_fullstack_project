@@ -11,9 +11,10 @@ class Room(models.Model):
 class Question(models.Model):
     text = models.TextField()
     difficulty = models.IntegerField(default=1)  # Difficulty level for dynamic allocation
-    category = models.CharField(max_length=50, blank=True)  # Optional categorization
+    # category = models.CharField(max_length=50, blank=True)  # Optional categorization
     correct_answer = models.CharField(max_length=255, blank=True)
-    choices = models.JSONField(default=list)  # Store multiple-choice options as JSON
+    # choices = models.JSONField(default=list)  # Store multiple-choice options as JSON
+    options = models.TextField(default="")  # Store multiple-choice options as a string
 
 class UserPerformance(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

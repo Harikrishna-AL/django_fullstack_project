@@ -5,7 +5,7 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
     const password = document.getElementById('password').value;
 
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/login/', { // Replace with your login API endpoint
+        const response = await fetch('http://127.0.0.1:8000/quiz/api/login/', { // Replace with your login API endpoint
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -16,7 +16,7 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem('authToken', data.token); // Store token for authenticated requests
-            window.location.href = 'room.html'; // Redirect to room code page
+            window.location.href = "http://127.0.0.1:8000/quiz/room/"; // Redirect to room code page
         } else {
             alert('Invalid login credentials');
         }
