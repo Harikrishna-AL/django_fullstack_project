@@ -3,7 +3,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import redirect
 from .models import Room
 
 
@@ -14,13 +17,10 @@ class LoginView(APIView):
 
         user = authenticate(request, username=email, password=password)
         if user is not None:
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            })
+            login(request, user)
+            return JsonResponse({'status': 'success', 'redirect_url': '/quiz/room/'})
         else:
-            return Response({'error': 'Invalid credentials'}, status=401)
+            return JsonResponse({'status': 'error', 'message': 'Invalid credentials'}, status=401)
         
 class JoinRoomView(APIView):
     permission_classes = [IsAuthenticated]
@@ -42,8 +42,11 @@ def quiz_room(request, room_code):
         'room_code': room_code
     })
 
-def login(request):
+def login_view(request):
     return render(request, 'login.html')
 
+# @login_required(login_url='/quiz/login', redirect_field_name='')
 def room(request):
+    if not request.user.is_authenticated:
+        return redirect('/quiz/login')
     return render(request, 'room.html')
