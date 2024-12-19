@@ -163,28 +163,45 @@ import random
 import json
 
 async def get_next_question(user, room):
-    answered_ids = await sync_to_async(
-        lambda: list(UserPerformance.objects.get(user=user, room=room).answered_questions.values_list('id', flat=True))
-    )()
+    try:
+        # Get answered question IDs for the user in the room
+        answered_ids = await sync_to_async(
+            lambda: list(UserPerformance.objects.get(user=user, room=room).answered_questions.values_list('id', flat=True))
+        )()
 
-    questions = await sync_to_async(
-        lambda: list(Question.objects.filter(~Q(id__in=answered_ids)).order_by('difficulty'))
-    )()
+        # Fetch unanswered questions
+        questions = await sync_to_async(
+            lambda: list(Question.objects.filter(~Q(id__in=answered_ids)).order_by('difficulty'))
+        )()
 
-    return random.choice(questions) if questions else None
+        return random.choice(questions) if questions else None
+
+    except UserPerformance.DoesNotExist:
+        # Log the error and return None if UserPerformance doesn't exist
+        return None
 
 
 async def update_leaderboard(room):
+    # Fetch leaderboard and performances asynchronously
     leaderboard = await sync_to_async(lambda: Leaderboard.objects.get(room=room))()
-    performances = await sync_to_async(lambda: list(UserPerformance.objects.filter(room=room)))()
+    performances = await sync_to_async(
+        lambda: list(UserPerformance.objects.filter(room=room).select_related('user'))
+    )()
 
-    rankings = {
-        str(performance.user.id): performance.score
-        for performance in sorted(performances, key=lambda p: -p.score)
-    }
+    # Build rankings in an async-friendly way
+    async def build_rankings(performances):
+        rankings = {}
+        for performance in sorted(performances, key=lambda p: -p.score):
+            user_id = await sync_to_async(lambda: performance.user.id)()
+            rankings[str(user_id)] = performance.score
+        return rankings
 
+    rankings = await build_rankings(performances)
     leaderboard.rankings = rankings
     await sync_to_async(leaderboard.save)()
+
+
+
 
 
 class QuizConsumer(AsyncWebsocketConsumer):
@@ -225,6 +242,8 @@ class QuizConsumer(AsyncWebsocketConsumer):
         room = await sync_to_async(lambda: Room.objects.get(code=self.room_code))()
         question = await get_next_question(user, room)
 
+        print(f'Sending question: {question.text}')
+
         if question:
             await self.send(text_data=json.dumps({
                 'type': 'next_question',
@@ -245,6 +264,14 @@ class QuizConsumer(AsyncWebsocketConsumer):
         user = self.scope['user']
         room = await sync_to_async(lambda: Room.objects.get(code=self.room_code))()
         await sync_to_async(lambda: room.participants.add(user))()
+
+        await sync_to_async(lambda: UserPerformance.objects.get_or_create(
+        user=user,
+        room=room,
+        defaults={'score': 0}  # Initialize with a score of 0
+        ))()
+
+        await sync_to_async(lambda: Leaderboard.objects.get_or_create(room=room))()
 
         # Notify participants
         await self.channel_layer.group_send(
@@ -293,6 +320,34 @@ class QuizConsumer(AsyncWebsocketConsumer):
             'message': message,
         }))
         
+    # async def submit_answer(self, data):
+    #     user = self.scope['user']
+    #     room = await sync_to_async(lambda: Room.objects.get(code=self.room_code))()
+    #     question_id = data.get('question_id')
+    #     answer = data.get('answer')
+
+    #     question = await sync_to_async(lambda: Question.objects.get(id=question_id))()
+    #     performance = await sync_to_async(lambda: UserPerformance.objects.get(user=user, room=room))()
+
+    #     # Check answer and update score
+    #     if question.correct_answer == answer:
+    #         performance.score += 10  # Add points for correct answer
+    #     await sync_to_async(lambda: performance.answered_questions.add(question))()
+    #     await sync_to_async(performance.save)()
+
+    #     # Update leaderboard
+    #     await update_leaderboard(room)
+
+    #     # Notify participants
+    #     leaderboard = await sync_to_async(lambda: Leaderboard.objects.get(room=room))()
+    #     await self.channel_layer.group_send(
+    #         self.room_group_name,
+    #         {
+    #             'type': 'leaderboard_update',
+    #             'leaderboard': leaderboard.rankings
+    #         }
+    #     )
+
     async def submit_answer(self, data):
         user = self.scope['user']
         room = await sync_to_async(lambda: Room.objects.get(code=self.room_code))()
@@ -308,6 +363,9 @@ class QuizConsumer(AsyncWebsocketConsumer):
         await sync_to_async(lambda: performance.answered_questions.add(question))()
         await sync_to_async(performance.save)()
 
+        # Ensure a leaderboard exists
+        leaderboard, _ = await sync_to_async(lambda: Leaderboard.objects.get_or_create(room=room))()
+
         # Update leaderboard
         await update_leaderboard(room)
 
@@ -316,8 +374,9 @@ class QuizConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(
             self.room_group_name,
             {
-                'type': 'leaderboard_update',
+                'type': 'submit_answer',
                 'leaderboard': leaderboard.rankings
             }
         )
+
 

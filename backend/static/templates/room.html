@@ -35,6 +35,9 @@
     
         async function joinRoom() {
             const roomCode = document.getElementById('roomCode').value.trim();
+
+            // store the room code in local storage
+            localStorage.setItem('roomCode', roomCode);
     
             if (!roomCode) {
                 alert('Please enter a room code');
@@ -94,7 +97,7 @@
                     socket.onclose = () => {
                         console.log('WebSocket connection closed');
                         // remove the user from the list
-                        
+
                     };
     
                     // Show the waiting screen

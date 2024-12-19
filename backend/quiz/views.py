@@ -34,11 +34,11 @@ class JoinRoomView(APIView):
             return Response({'error': 'Room does not exist'}, status=404)
         
 def index(request):
-    return render(request, 'quiz/index.html')
+    return render(request, 'index.html')
 
 # room code in the function quiz_room
 def quiz_room(request, room_code):
-    return render(request, 'quiz/quiz.html', {
+    return render(request, 'quiz.html', {
         'room_code': room_code
     })
 

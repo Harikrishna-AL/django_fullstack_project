@@ -8,6 +8,11 @@ class Room(models.Model):
     is_active = models.BooleanField(default=False)  # Whether the quiz has started
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # Create a leaderboard if it doesn't already exist
+        Leaderboard.objects.get_or_create(room=self)
+
 class Question(models.Model):
     text = models.TextField()
     difficulty = models.IntegerField(default=1)  # Difficulty level for dynamic allocation

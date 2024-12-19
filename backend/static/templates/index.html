@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Application</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="home-container">
+        <div class="welcome-section text-center">
+            <h1>Welcome to the Ultimate Quiz App</h1>
+            <p class="mt-3 lead">Test your knowledge, compete with friends, and climb the leaderboard!</p>
+        </div>
+
+        <div class="features-section mt-5">
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <img src="{% static 'images/brain.png' %}" alt="Brain Icon" class="feature-icon">
+                        <h3>Sharpen Your Mind</h3>
+                        <p>Take quizzes on a variety of topics and boost your intellect.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <img src="{% static 'images/trophy.png' %}" alt="Trophy Icon" class="feature-icon">
+                        <h3>Compete Globally</h3>
+                        <p>Join global competitions and see where you rank!</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <img src="{% static 'images/stats.png' %}" alt="Stats Icon" class="feature-icon">
+                        <h3>Track Your Progress</h3>
+                        <p>Monitor your scores and improvement over time.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-section text-center mt-5">
+            <button class="btn btn-primary btn-lg" onclick="redirectToLogin()">Get Started</button>
+        </div>
+    </div>
+
+    <script>
+        function redirectToLogin() {
+            window.location.href = 'login';
+        }
+    </script>
+</body>
+</html>
