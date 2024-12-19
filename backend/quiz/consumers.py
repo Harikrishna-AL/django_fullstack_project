@@ -236,6 +236,8 @@ class QuizConsumer(AsyncWebsocketConsumer):
             await self.submit_answer(data)
         elif action == 'get_next_question':
             await self.send_next_question(data)
+        elif action == 'host_info':
+            await self.host_info(data)
 
     async def send_next_question(self, data):
         user = self.scope['user']
@@ -347,6 +349,39 @@ class QuizConsumer(AsyncWebsocketConsumer):
     #             'leaderboard': leaderboard.rankings
     #         }
     #     )
+    async def host_info(self, data):
+        user = self.scope['user']
+        
+        # Fetch room details asynchronously
+        room = await sync_to_async(lambda: Room.objects.select_related('admin').get(code=self.room_code))()
+        
+        # Check if user is the host
+        is_host = await sync_to_async(lambda: room.admin == user)()
+        
+        # Prepare the message
+        message = 1 if is_host else 0
+
+        # Notify participants
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'host_info_room',
+                'message': message
+            }
+        )
+
+    async def host_info_room(self, event):
+        """
+        Handles the host info room notification.
+        """
+        message = event['message']
+
+        # Send the message to WebSocket
+        await self.send(text_data=json.dumps({
+            'type': 'host_info_room',
+            'message': message,
+        }))
+
 
     async def submit_answer(self, data):
         user = self.scope['user']

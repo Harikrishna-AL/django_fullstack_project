@@ -38,6 +38,9 @@ def index(request):
 
 # room code in the function quiz_room
 def quiz_room(request, room_code):
+    if not request.user.is_authenticated:
+        return redirect('/quiz/login')
+    
     return render(request, 'quiz.html', {
         'room_code': room_code
     })
@@ -49,4 +52,8 @@ def login_view(request):
 def room(request):
     if not request.user.is_authenticated:
         return redirect('/quiz/login')
-    return render(request, 'room.html')
+    data = {
+        'authenticated': request.user.is_authenticated,
+        'username': request.user.username
+    }
+    return render(request, 'room.html', context=data)

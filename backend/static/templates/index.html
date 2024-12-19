@@ -5,78 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Application</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="{% static 'css/index.css' %}" rel="stylesheet">    
 </head>
 <body>
-    <div class="home-container" style="background: linear-gradient(to bottom right, #4c89ff, #7ed6df); padding: 30px;">
-        <div class="welcome-section text-center text-white">
-            <h1>Welcome to the Ultimate Quiz App</h1>
-            <p class="mt-3 lead">Test your knowledge, compete with friends, and climb the leaderboard!</p>
-        </div>
+    <div class="container">
+        <section class="hero">
+            <h1>Master Your Knowledge</h1>
+            <p>Challenge yourself with our interactive quizzes, compete globally, and become a quiz champion!</p>
+            <a href="/quiz/login" class="btn">Start Your Journey</a>
+        </section>
 
-        <div class="features-section mt-5">
-            <div class="row text-center">
-                <div class="col-md-4">
-                    <div class="feature-card shadow p-4 rounded bg-white">
-                        <i class="fas fa-brain fa-3x feature-icon text-primary"></i>
-                        <h3>Sharpen Your Mind</h3>
-                        <p>Take quizzes on a variety of topics and boost your intellect.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="feature-card shadow p-4 rounded bg-white">
-                        <i class="fas fa-trophy fa-3x feature-icon text-warning"></i>
-                        <h3>Compete Globally</h3>
-                        <p>Join global competitions and see where you rank!</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="feature-card shadow p-4 rounded bg-white">
-                        <i class="fas fa-chart-line fa-3x feature-icon text-success"></i>
-                        <h3>Track Your Progress</h3>
-                        <p>Monitor your scores and improvement over time.</p>
-                    </div>
-                </div>
+        <div class="stats">
+            <div class="stat-card">
+                <h3>10K+</h3>
+                <p>Active Players</p>
+            </div>
+            <div class="stat-card">
+                <h3>5000+</h3>
+                <p>Daily Quizzes</p>
+            </div>
+            <div class="stat-card">
+                <h3>50+</h3>
+                <p>Topic Categories</p>
             </div>
         </div>
 
-        <div class="additional-section mt-5">
-            <div class="row text-center">
-                <div class="col-md-4">
-                    <div class="feature-card shadow p-4 rounded bg-white">
-                        <i class="fas fa-user-friends fa-3x feature-icon text-info"></i>
-                        <h3>Play with Friends</h3>
-                        <p>Challenge your friends to exciting quiz battles.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="feature-card shadow p-4 rounded bg-white">
-                        <i class="fas fa-book fa-3x feature-icon text-danger"></i>
-                        <h3>Learn New Topics</h3>
-                        <p>Explore quizzes on new and interesting topics daily.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="feature-card shadow p-4 rounded bg-white">
-                        <i class="fas fa-star fa-3x feature-icon text-secondary"></i>
-                        <h3>Earn Achievements</h3>
-                        <p>Unlock badges and rewards as you progress.</p>
-                    </div>
-                </div>
+        <div class="features">
+            <div class="feature-card">
+                <i class="fas fa-brain"></i>
+                <h3>Knowledge Enhancement</h3>
+                <p>Expand your knowledge across various domains with our carefully curated questions</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-trophy"></i>
+                <h3>Global Competitions</h3>
+                <p>Participate in daily tournaments and compete with players worldwide</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Progress Tracking</h3>
+                <p>Monitor your improvement with detailed analytics and performance metrics</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-users"></i>
+                <h3>Multiplayer Mode</h3>
+                <p>Challenge friends in real-time multiplayer quiz battles</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-clock"></i>
+                <h3>Time Challenges</h3>
+                <p>Test your speed and accuracy with timed quiz sessions</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-star"></i>
+                <h3>Achievement System</h3>
+                <p>Earn badges and unlock special rewards as you progress</p>
             </div>
         </div>
 
-        <div class="cta-section text-center mt-5">
-            <button class="btn btn-primary btn-lg shadow" onclick="redirectToLogin()">Get Started</button>
-        </div>
+        <section class="steps">
+            <h2>How It Works</h2>
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Sign Up</h3>
+                    <p>Create your account in seconds</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Choose Topics</h3>
+                    <p>Select from various quiz categories</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Complete Quizzes</h3>
+                    <p>Answer questions and earn points</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Climb Ranks</h3>
+                    <p>Compete and rise through the ranks</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta">
+            <h2>Ready to Test Your Knowledge?</h2>
+            <p>Join thousands of quiz enthusiasts and start your journey today!</p>
+            <a href="/quiz/login" class="btn">Get Started Now</a>
+        </section>
     </div>
-
-    <script>
-        function redirectToLogin() {
-            window.location.href = 'login';
-        }
-    </script>
 </body>
 </html>
