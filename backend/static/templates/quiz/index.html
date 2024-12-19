@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Quiz</title>
+</head>
+<body>
+    <h1>Live Quiz</h1>
+    <script>
+        // const socket = new WebSocket('ws://' + window.location.host + '/ws/quiz/');
+
+        // socket.onopen = function() {
+        //     console.log("WebSocket connection established.");
+        //     socket.send(JSON.stringify({ message: "Hello, Quiz!" }));
+        // };
+
+        // socket.onmessage = function(event) {
+        //     const data = JSON.parse(event.data);
+        //     console.log("Message from server:", data.message);
+        // };
+
+        // socket.onclose = function() {
+        //     console.log("WebSocket connection closed.");
+        // };
+        const roomCode = 'ABC123'; // Example room code
+const socket = new WebSocket('ws://' + window.location.host + '/ws/quiz/' + roomCode + '/');
+
+socket.onopen = function() {
+    console.log('WebSocket connected.');
+};
+
+socket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    if (data.type === 'room_update') {
+        console.log(data.message);
+    } else if (data.type === 'quiz_start') {
+        console.log('Quiz started!');
+    } else if (data.type === 'leaderboard_update') {
+        console.log('Leaderboard updated:', data.leaderboard);
+    }
+};
+
+socket.onclose = function() {
+    console.log('WebSocket disconnected.');
+};
+
+// Example: Join room
+socket.send(JSON.stringify({
+    action: 'join_room'
+}));
+
+// Example: Submit answer
+socket.send(JSON.stringify({
+    action: 'submit_answer',
+    question_id: 42,
+    answer: 'A'
+}));
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attempted Quizzes</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 style="color: white;">Attempted Quizzes</h2>
+            <button class="btn btn-primary" onclick="location.href='dashboard.html'">Back to Dashboard</button>
+        </div>
+
+        <!-- Filters -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <input type="text" id="quizFilter" class="form-control" placeholder="Search by quiz name...">
+            </div>
+            <div class="col-md-4">
+                <select id="statusFilter" class="form-control">
+                    <option value="">Filter by Status</option>
+                    <option value="Completed">Completed</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Failed">Failed</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Quiz Table -->
+        <div class="card p-3 shadow" id="history_table">
+            <table id="quizTable" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Quiz Name</th>
+                        <th>Score</th>
+                        <th>Date Attempted</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>HTML Basics</td>
+                        <td>85%</td>
+                        <td>2024-11-10</td>
+                        <td>Completed</td>
+                        <td><button class="btn btn-primary btn-info">View Details</button></td>
+                    </tr>
+                    <tr>
+                        <td>CSS Fundamentals</td>
+                        <td>70%</td>
+                        <td>2024-11-08</td>
+                        <td>Completed</td>
+                        <td><button class="btn btn-primary btn-info">View Details</button></td>
+                    </tr>
+                    <tr>
+                        <td>JavaScript Essentials</td>
+                        <td>-</td>
+                        <td>2024-11-07</td>
+                        <td>In Progress</td>
+                        <td><button class="btn btn-info btn-info">Resume</button></td>
+                    </tr>
+                    <tr>
+                        <td>Python for Beginners</td>
+                        <td>40%</td>
+                        <td>2024-11-05</td>
+                        <td>Failed</td>
+                        <td><button class="btn btn-danger btn-warning">Retry</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Initialize DataTables
+        $(document).ready(function() {
+            let table = $('#quizTable').DataTable();
+
+            // Filter by quiz name
+            $('#quizFilter').on('keyup', function() {
+                table.search(this.value).draw();
+            });
+
+            // Filter by status
+            $('#statusFilter').on('change', function() {
+                table.column(3).search(this.value).draw();
+            });
+        });
+    </script>
+</body>
+</html>

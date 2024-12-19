@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .leaderboard {
+            margin-top: 20px;
+        }
+        .leaderboard table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .leaderboard th, .leaderboard td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .leaderboard th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Live Quiz</h1>
+
+        <!-- Room Join Section -->
+        <div id="join-room-section">
+            <label for="room-code">Enter Room Code:</label>
+            <input type="text" id="room-code" placeholder="e.g., ROOM123">
+            <button class="btn" onclick="joinRoom()">Join Room</button>
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quiz-section" class="hidden">
+            <h2>Quiz</h2>
+            <div id="question-container">
+                <p id="question-text"></p>
+                <div id="answer-options"></div>
+                <button class="btn" onclick="submitAnswer()">Submit Answer</button>
+            </div>
+        </div>
+
+        <!-- Leaderboard Section -->
+        <div id="leaderboard-section" class="hidden">
+            <h2>Leaderboard</h2>
+            <div class="leaderboard">
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // WebSocket connection
+        let socket = null;
+        let roomCode = "";
+
+        function joinRoom() {
+            roomCode = document.getElementById("room-code").value.trim();
+            if (!roomCode) {
+                alert("Please enter a room code.");
+                return;
+            }
+
+            // Establish WebSocket connection
+            socket = new WebSocket(`ws://${window.location.host}/ws/quiz/${roomCode}/`);
+
+            socket.onopen = function () {
+                console.log("Connected to WebSocket");
+                document.getElementById("join-room-section").classList.add("hidden");
+                document.getElementById("quiz-section").classList.remove("hidden");
+
+                alert("You have joined the quiz!");
+                if (socket.readyState === WebSocket.OPEN) {
+                    socket.send(JSON.stringify({
+                        action: "join_room"
+                }));
+                console.log("Join room message sent!");
+                } 
+                else {
+                    console.error("WebSocket is not open. Current state:", socket.readyState);
+                }
+
+                if (socket.readyState === WebSocket.OPEN) {
+                    socket.send(JSON.stringify({
+                        action: "start_quiz"
+                    }));
+                    console.log("Start quiz message sent!");
+                } else {
+                    console.error("WebSocket is not open. Current state:", socket.readyState);
+                }
+            };
+
+            
+
+            socket.onmessage = function (event) {
+                const data = JSON.parse(event.data);
+                console.log("Received:", data);
+
+                if (data.type === "quiz_started") {
+                    alert(data.message);
+                } else if (data.type === "question") {
+                    displayQuestion(data.question);
+                } else if (data.type === "answer_feedback") {
+                    alert(`Correct: ${data.correct}. Your score: ${data.score}`);
+                } else if (data.type === "leaderboard") {
+                    updateLeaderboard(data.leaderboard);
+                }
+            };
+
+            socket.onclose = function () {
+                console.log("Disconnected from WebSocket");
+                alert("Connection lost.");
+            };
+
+            socket.onerror = function (error) {
+                console.error("WebSocket Error:", error);
+            };
+        }
+
+        function displayQuestion(question) {
+            const questionText = document.getElementById("question-text");
+            const answerOptions = document.getElementById("answer-options");
+
+            // Update question text
+            questionText.textContent = question.text;
+
+            // Clear previous options
+            answerOptions.innerHTML = "";
+
+            // Display answer options
+            question.choices.forEach((choice, index) => {
+                const option = document.createElement("button");
+                option.textContent = choice;
+                option.classList.add("btn");
+                option.style.margin = "5px";
+                option.onclick = () => {
+                    document.querySelectorAll("#answer-options .btn").forEach(btn => btn.classList.remove("selected"));
+                    option.classList.add("selected");
+                };
+                answerOptions.appendChild(option);
+            });
+        }
+
+        function submitAnswer() {
+            const selectedOption = document.querySelector("#answer-options .selected");
+            if (!selectedOption) {
+                alert("Please select an answer.");
+                return;
+            }
+
+            const answer = selectedOption.textContent;
+
+            // Send answer to the WebSocket
+            socket.send(JSON.stringify({
+                action: "submit_answer",
+                answer: answer
+            }));
+        }
+
+        function updateLeaderboard(leaderboard) {
+            const leaderboardTableBody = document.querySelector("#leaderboard-table tbody");
+            leaderboardTableBody.innerHTML = ""; // Clear existing rows
+
+            leaderboard.forEach((player, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${player.user__username}</td>
+                    <td>${player.score}</td>
+                `;
+                leaderboardTableBody.appendChild(row);
+            });
+
+            document.getElementById("leaderboard-section").classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Room Code</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'templates/css/styles.css' %}">
+</head>
+<body>
+    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="room-code-card p-5 text-center">
+            <h2>Enter Room Code</h2>
+            <input type="text" id="roomCode" class="form-control form-control-lg my-4" placeholder="Room Code" required>
+            <button class="btn btn-primary btn-lg btn-block" onclick="joinRoom()">Join Room</button>
+        </div>
+    </div>
+    <script>
+        async function joinRoom() {
+            const roomCode = document.getElementById('roomCode').value.trim();
+
+            if (!roomCode) {
+                alert('Please enter a room code');
+                return;
+            }
+
+            const token = localStorage.getItem('authToken'); // Get the stored auth token
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/join-room/${roomCode}/`, { // Replace with your API endpoint
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    window.location.href = 'quiz.html'; // Redirect to quiz page
+                } else {
+                    alert('Invalid room code or unable to join the room');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while joining the room.');
+            }
+        }
+    </script>
+</body>
+</html>

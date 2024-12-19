@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Quiz App - Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'templates/css/styles.css' %}">
+</head>
+<body>
+    <div class="login-container d-flex justify-content-center align-items-center">
+        <div class="login-card p-5 text-center">
+            <h1 class="mb-4">Live Quiz App</h1>
+            <p class="mb-4">Join now to test your skills and compete with others in real time!</p>
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="email" id="email" class="form-control form-control-lg mb-3" placeholder="Email Address" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" class="form-control form-control-lg mb-3" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg btn-block mb-3">Login</button>
+                <button type="button" class="btn btn-outline-light btn-lg btn-block" onclick="goToSignup()">Sign Up</button>
+            </form>
+        </div>
+    </div>
+    <!-- {% load static %} -->
+    <script src="{% static 'templates/js/app.js' %}"></script>
+    <script src="{% static 'templates/js/login.js' %}"></script>
+</body>
+</html>
