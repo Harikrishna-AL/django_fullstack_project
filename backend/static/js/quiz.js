@@ -1,14 +1,32 @@
 let socket;
 
 function submitAnswer(questionId, selectedOption) {
-    socket.send(JSON.stringify({
-        action: 'submit_answer',
-        question_id: questionId,
-        answer: selectedOption
-    }));
-    document.getElementById('nextButton').disabled = false;
+    const roomCode = localStorage.getItem('roomCode');
+    socket = new WebSocket(`ws://127.0.0.1:8000/ws/quiz/${roomCode}/`);
+    socket.onopen = function () {
+        console.log('Connected to the server');
+
+        if (socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({
+                action: 'submit_answer',
+                question_id: questionId,
+                answer: selectedOption
+            }));
+        }
+        document.getElementById('nextButton').disabled = false;
+    };
+
+    socket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        console.log(data);
+        if (data.type == 'submit_answer'){
+            console.log("Leader board",data);
+        }
+    }
 }
 
+let questionId;
+let selectedOption;
 
 async function nextQuestion() {
 
@@ -16,21 +34,24 @@ async function nextQuestion() {
 
     socket = new WebSocket(`ws://127.0.0.1:8000/ws/quiz/${roomCode}/`);
 
-    const questionId = document.getElementById('questionNumber').innerText.split(' ')[1];
-    const selectedOption = document.querySelector('.option-btn.selected').innerText;
+    questionId = document.getElementById('questionNumber').innerText.split(' ')[1];
+    selectedOption = document.querySelector('.option-btn.selected').innerText;
+
+    submitAnswer(questionId, selectedOption);
 
     socket.onopen = function () {
         console.log('Connected to the server');
 
         //  submit the answer
-        submitAnswer(questionId, selectedOption);
+        // if ((questionId !== undefined) && (selectedOption !== undefined)){
+        // submitAnswer(questionId, selectedOption);
 
         if (socket.readyState === WebSocket.OPEN) {
             socket.send(JSON.stringify({
                 action: 'get_next_question'
             }));
         }
-
+        
 
     }
 
@@ -71,8 +92,11 @@ async function nextQuestion() {
                 leaderboard.appendChild(leaderboardItem);
             });
         }
-        else if (data.type == 'submit_answer'){
-            console.log(data);
+        else if (data.type === 'quiz_completed') {
+            window.location.href = '/quiz/dashboard/';
         }
+        // else if (data.type == 'submit_answer'){
+        //     console.log(data);
+        // }
     };
 };

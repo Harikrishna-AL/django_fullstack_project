@@ -7,4 +7,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login_view'),
     path('room/', views.room, name='room'),
     path('api/login/', views.LoginView.as_view(), name='login_api'),
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('api/quiz-stats/<str:room_code>/', views.DashboardView.as_view(), name='quiz_stats'),
+
 ]

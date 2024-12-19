@@ -5,9 +5,12 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from rest_framework.decorators import api_view, permission_classes
+from django.db.models import Count
+
 from django.http import JsonResponse
 from django.shortcuts import redirect
-from .models import Room
+from .models import Room, Question, UserPerformance
 
 
 class LoginView(APIView):
@@ -18,7 +21,7 @@ class LoginView(APIView):
         user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request, user)
-            return JsonResponse({'status': 'success', 'redirect_url': '/quiz/room/'})
+            return JsonResponse({'status': 'success', 'redirect_url': '/quiz/room/', 'token': str(RefreshToken.for_user(user))})
         else:
             return JsonResponse({'status': 'error', 'message': 'Invalid credentials'}, status=401)
         
@@ -57,3 +60,37 @@ def room(request):
         'username': request.user.username
     }
     return render(request, 'room.html', context=data)
+
+def dashboard(request):
+    return render(request, 'dashboard.html')
+
+
+class DashboardView(APIView):
+    def post(self, request, room_code):
+        try:
+            # Fetch the room
+            room = Room.objects.get(code=room_code)
+
+            # Total participants
+            total_participants = room.participants.count()
+
+            # Difficulty breakdown
+            difficulty_stats = Question.objects.all()\
+                .values('difficulty')\
+                .annotate(count=Count('difficulty'))
+
+            # Correct answers count
+            user_performance = UserPerformance.objects.filter(room=room)
+            correct_answers = sum([(perf.score / 10) for perf in user_performance])
+
+            # Build response
+            data = {
+                'total_participants': total_participants,
+                'difficulty_stats': list(difficulty_stats),
+                'correct_answers': correct_answers,
+            }
+            return JsonResponse(data, status=200)
+        except Room.DoesNotExist:
+            return JsonResponse({'error': 'Room not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)

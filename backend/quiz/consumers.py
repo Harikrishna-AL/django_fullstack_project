@@ -245,7 +245,6 @@ class QuizConsumer(AsyncWebsocketConsumer):
         question = await get_next_question(user, room)
 
         print(f'Sending question: {question.text}')
-
         if question:
             await self.send(text_data=json.dumps({
                 'type': 'next_question',
@@ -388,7 +387,8 @@ class QuizConsumer(AsyncWebsocketConsumer):
         room = await sync_to_async(lambda: Room.objects.get(code=self.room_code))()
         question_id = data.get('question_id')
         answer = data.get('answer')
-
+        # print(question_id, user, room, answer)
+        # if question_id:
         question = await sync_to_async(lambda: Question.objects.get(id=question_id))()
         performance = await sync_to_async(lambda: UserPerformance.objects.get(user=user, room=room))()
 
@@ -406,6 +406,8 @@ class QuizConsumer(AsyncWebsocketConsumer):
 
         # Notify participants
         leaderboard = await sync_to_async(lambda: Leaderboard.objects.get(room=room))()
+
+        print(leaderboard.rankings)
         await self.channel_layer.group_send(
             self.room_group_name,
             {

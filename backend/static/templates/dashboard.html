@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container-fluid p-4">
+        <div class="dashboard-header text-white mb-4">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="display-4 font-weight-bold">Dashboard Overview</h1>
+                        <p class="lead">Track your data, analyze trends, and get actionable insights at a glance.</p>
+                    </div>
+                    <div class="col-md-4 text-md-right mt-3 mt-md-0">
+                        <button class="btn btn-primary btn-lg shadow-sm">Generate Report</button>
+                        <button class="btn btn-outline-light btn-lg shadow-sm">Settings</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Row for Key Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card shadow text-center p-4">
+                    <h4 id="totalParticipants">0</h4>
+                    <p>Total Participants</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow text-center p-4">
+                    <h4 id="correctAnswers">0</h4>
+                    <p>Correct Answers</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow text-center p-4">
+                    <h4 id="questionsEasy">0</h4>
+                    <p>Easy Questions</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow text-center p-4">
+                    <h4 id="questionsMedium">0</h4>
+                    <p>Medium Questions</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Row for Charts -->
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card p-4 shadow">
+                    <h5 class="mb-3">Difficulty Breakdown</h5>
+                    <canvas id="difficultyChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card p-4 shadow">
+                    <h5 class="mb-3">Correct vs Incorrect Answers</h5>
+                    <canvas id="answersChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch data from the API
+        async function fetchStats() {
+            const roomCode = localStorage.getItem('roomCode');
+            const response = await fetch(`/quiz/api/quiz-stats/${roomCode}/`, {
+                method: 'POST',
+                Authorization: `Token ${localStorage.getItem('authToken')}`,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                updateDashboard(data);
+            } else {
+                console.error('Failed to fetch stats');
+            }
+        }
+
+        // Update the dashboard with fetched stats
+        function updateDashboard(data) {
+            document.getElementById('totalParticipants').innerText = data.total_participants;
+            document.getElementById('correctAnswers').innerText = data.correct_answers;
+
+            const easyQuestions = data.difficulty_stats.find(stat => stat.difficulty === 1)?.count || 0;
+            const mediumQuestions = data.difficulty_stats.find(stat => stat.difficulty === 2)?.count || 0;
+            const hardQuestions = data.difficulty_stats.find(stat => stat.difficulty === 3)?.count || 0;
+
+            document.getElementById('questionsEasy').innerText = easyQuestions;
+            document.getElementById('questionsMedium').innerText = mediumQuestions;
+
+            // Create charts
+            createDifficultyChart(easyQuestions, mediumQuestions, hardQuestions);
+            createAnswersChart(data.correct_answers, data.total_questions - data.correct_answers);
+        }
+
+        // Difficulty Breakdown Chart
+        function createDifficultyChart(easy, medium, hard) {
+            const ctx = document.getElementById('difficultyChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Easy', 'Medium', 'Hard'],
+                    datasets: [{
+                        data: [easy, medium, hard],
+                        backgroundColor: ['#4caf50', '#ff9800', '#f44336']
+                    }]
+                }
+            });
+        }
+
+        // Correct vs Incorrect Answers Chart
+        function createAnswersChart(correct, incorrect) {
+            const ctx = document.getElementById('answersChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Correct', 'Incorrect'],
+                    datasets: [{
+                        label: 'Answers',
+                        data: [correct, incorrect],
+                        backgroundColor: ['#2196f3', '#f44336']
+                    }]
+                }
+            });
+        }
+
+        // Initialize the dashboard
+        fetchStats();
+    </script>
+</body>
+</html>
